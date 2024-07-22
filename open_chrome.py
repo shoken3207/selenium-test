@@ -1,181 +1,113 @@
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import TimeoutException
 import time
+
 driver_path = 'C:\\webdriver\\chromedriver.exe'
 service = Service(driver_path)
 
 email = "aa@aaaaa"
 password = "aaaaaa"
+
 driver = webdriver.Chrome(service=service)
 driver.get('http://localhost:8080/hotmot/index.jsp')
 
-try:
-    email_field = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, 'email'))
+def wait_and_send_keys(locator, keys):
+    element = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(locator)
     )
-    email_field.send_keys(email)
+    element.send_keys(keys)
 
-    password_field = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, 'password'))
+def wait_and_click(locator):
+    element = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(locator)
     )
-    password_field.send_keys(password)
+    element.click()
 
-    login_button = driver.find_element(By.ID, 'loginButton')
-    login_button.click()
+def select_from_dropdown(xpath, value):
+    select_box = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, xpath))
+    )
+    select = Select(select_box)
+    select.select_by_value(value)
+
+def add_items(tab_index, select_value, add_count):
+    tab_xpath = f'(//div[@class="tab"])[{tab_index}]'
+    select_xpath = '(//div[@class="list-item show"])[1]/select[@class="select"]'
+    add_button_xpath = '(//div[@class="list-item show"])[1]/div[1]/div/button[2]'
+    cart_button_xpath = '(//div[@class="list-item show"])[1]/div[2]/div'
+
+    wait_and_click((By.XPATH, tab_xpath))
+    time.sleep(1)  # Ensure the page has loaded
+    select_from_dropdown(select_xpath, select_value)
     
-    time.sleep(1)
+    for _ in range(add_count):
+        wait_and_click((By.XPATH, add_button_xpath))
     
-    print("ログイン成功")
-except TimeoutException:
-    print("ログインボタンが見つかりませんでした。")
-except Exception as e:
-    print(f"エラーが発生しました: {e}")
+    wait_and_click((By.XPATH, cart_button_xpath))
+    time.sleep(1)  # Ensure the action is processed
 
-tab1 =  WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="tab"])[1]'))
-)
-tab1.click()
-time.sleep(1)
-select_box1 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[2]/select[@class="select"]'))
-)
-select1 = Select(select_box1)
-select1.select_by_value('2')
-add_button1 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/div[1]/div/button[2]'))
-)
-for _ in range(2):
-    add_button1.click()
-cart_button1 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/div[2]/div'))
-)
-cart_button1.click()
-time.sleep(1)
+def update_cart_item(xpath, quantity):
+    input_element = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, xpath))
+    )
+    input_element.clear()
+    input_element.send_keys(quantity)
 
+def main():
+    try:
+        wait_and_send_keys((By.ID, 'email'), email)
+        wait_and_send_keys((By.ID, 'password'), password)
+        wait_and_click((By.ID, 'loginButton'))
 
-tab2 =  WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="tab"])[2]'))
-)
-tab2.click()
-time.sleep(1)
-select_box2 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/select[@class="select"]'))
-)
-select2 = Select(select_box2)
-select2.select_by_value('2')
-add_button2 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/div[1]/div/button[2]'))
-)
-for _ in range(2):
-    add_button2.click()
-cart_button2 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/div[2]/div'))
-)
-cart_button2.click()
-time.sleep(1)
+        print("ログイン成功")
 
+        add_items(1, '2', 2)
+        add_items(2, '2', 2)
+        add_items(3, '7', 2)
+        add_items(4, '7', 2)
 
+        # Add items from tab 1
+        wait_and_click((By.XPATH, '(//div[@class="tab"])[1]'))
+        time.sleep(1)
+        link = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/a'))
+        )
+        link.click()
+        time.sleep(1)
+        
+        first_add_button_xpath = '(//div[@class="counter-group-child"])[1]//button[@class="add"]'
+        second_add_button_xpath = '(//div[@class="counter-group-child"])[2]//button[@class="add"]'
+        cart_button_xpath = '//div[@class="cart-button"]'
+        
+        for _ in range(2):
+            wait_and_click((By.XPATH, first_add_button_xpath))
+        for _ in range(3):
+            wait_and_click((By.XPATH, second_add_button_xpath))
+        wait_and_click((By.XPATH, cart_button_xpath))
+        time.sleep(2)
+        
+        driver.get('http://localhost:8080/hotmot/CartDetailListServlet?cartId=1')
+        time.sleep(1)
+        
+        update_cart_item('(//div[@class="cart-detail-list"]//div[@class="box"])[1]//input[@type="number"]', '100')
+        update_cart_item('(//div[@class="cart-detail-list"]//div[@class="box"])[2]//input[@type="number"]', '100')
 
-tab3 =  WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="tab"])[3]'))
-)
-tab3.click()
-time.sleep(1)
-select_box3 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/select[@class="select"]'))
-)
-select3 = Select(select_box3)
-select3.select_by_value('7')
-add_button3 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/div[1]/div/button[2]'))
-)
-for _ in range(2):
-    add_button3.click()
-cart_button3 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/div[2]/div'))
-)
-cart_button3.click()
-time.sleep(1)
+        wait_and_click((By.XPATH, '//button[@id="updateCart"]'))
+        time.sleep(3)
+        wait_and_click((By.XPATH, '//button[@id="order"]'))
+        time.sleep(3)
 
-tab4 =  WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="tab"])[4]'))
-)
-tab4.click()
-time.sleep(1)
-select_box4 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/select[@class="select"]'))
-)
-select4 = Select(select_box4)
-select4.select_by_value('7')
-add_button4 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/div[1]/div/button[2]'))
-)
-for _ in range(2):
-    add_button4.click()
-cart_button4 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/div[2]/div'))
-)
-cart_button4.click()
+    except TimeoutException:
+        print("タイムアウトエラーが発生しました。")
+    except Exception as e:
+        print(f"エラーが発生しました: {e}")
+    finally:
+        driver.quit()
 
-
-tab5 =  WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="tab"])[1]'))
-)
-tab5.click()
-time.sleep(1)
-
-link = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="list-item show"])[1]/a'))
-)
-link.click()
-time.sleep(1)
-first_add_button = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="counter-group-child"])[1]//button[@class="add"]'))
-)
-for _ in range(2):
-    first_add_button.click()
-
-second_add_button = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '(//div[@class="counter-group-child"])[2]//button[@class="add"]'))
-)
-for _ in range(3):
-    second_add_button.click()
-time.sleep(1)
-cart_button = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '//div[@class="cart-button"]'))
-)
-cart_button.click()
-time.sleep(2)
-driver.get('http://localhost:8080/hotmot/CartDetailListServlet?cartId=1')
-time.sleep(1)
-first_input = WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.XPATH, '(//div[@class="cart-detail-list"]//div[@class="box"])[1]//input[@type="number"]'))
-)
-first_input.clear() 
-first_input.send_keys('100')  
-
-second_input = WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.XPATH, '(//div[@class="cart-detail-list"]//div[@class="box"])[2]//input[@type="number"]'))
-)
-second_input.clear()  # 既存の値をクリア
-second_input.send_keys('100')  # 新しい値を入力
-time.sleep(1)
-update_cart_button = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '//button[@id="updateCart"]'))
-)
-update_cart_button.click()
-time.sleep(3)
-order_button = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '//button[@id="order"]'))
-)
-order_button.click()
-time.sleep(3)
+if __name__ == "__main__":
+    main()
