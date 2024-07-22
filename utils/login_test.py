@@ -40,5 +40,3 @@ def login():
         print("ログインボタンが見つかりませんでした。")
     except Exception as e:
         print(f"エラーが発生しました: {e}")
-    # finally:
-    #     driver.quit()
