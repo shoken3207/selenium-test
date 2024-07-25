@@ -80,8 +80,8 @@ def main():
         listsDelete_button.click()
         time.sleep(1)
 
-        detailDelete_button = driver.find_element(By.XPATH, '(//div[@class="list-item show"])[1]/a')
-        detailDelete_button.click()
+        productDetailLink = driver.find_element(By.XPATH, '(//div[@class="list-item show"])[1]/a')
+        productDetailLink.click()
         time.sleep(1)
 
         bookmark_button = driver.find_element(By.XPATH, '(//div[@class="top"])//i')
@@ -92,8 +92,15 @@ def main():
 
         # bookmarkList_button = driver.find_element(By.XPATH, '//*[@id="header"]/div/nav/ul/li[2]/a')
         # bookmarkList_button.click()
-        driver.get('http://localhost:8080/hotmot/BookMarkServlet?userId=1')
-
+        bookMarkScreenLink = driver.find_element(By.XPATH, '//*[@id="header"]/div/nav/ul/li[2]/a')
+        bookMarkScreenLink.click()
+        time.sleep(1)
+        # driver.get('http://localhost:8080/hotmot/BookMarkServlet?userId=1')
+        
+        deleteBookMarkIcon = driver.find_element(By.XPATH, '//*[@id="lists"]/div[1]/div/i')
+        deleteBookMarkIcon.click()
+        time.sleep(1)
+        driver.refresh()
         # time.sleep(3)
         # bookmarkList_button = driver.find_element(By.XPATH, '(//*[@id="sp"]/nav/ul/li[2]/a)')
         # bookmarkList_button.click()
