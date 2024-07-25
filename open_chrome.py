@@ -7,11 +7,19 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException
 import time
 
+# name = '中村大空'
+# email = 'bb@bbbb'
+# password = 'bbbbbb'
+# confirmPassword = 'bbbbbb'
+register_user = {
+    'name': '中村大空',
+    'email': 'bb@bbbb',
+    'password': 'bbbbbb',
+    'confirmPassword': 'bbbbbb'
+}
 driver_path = 'C:\\webdriver\\chromedriver.exe'
 service = Service(driver_path)
 
-email = "aa@aaaaa"
-password = "aaaaaa"
 
 driver = webdriver.Chrome(service=service)
 driver.get('http://localhost:8080/hotmot/index.jsp')
@@ -60,8 +68,31 @@ def update_cart_item(xpath, quantity):
 
 def main():
     try:
-        wait_and_send_keys((By.ID, 'email'), email)
-        wait_and_send_keys((By.ID, 'password'), password)
+         try:
+            # 方法1: CSSセレクタ
+            btn_register = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, 'a.btn.register'))
+            )
+            btn_register.click()
+            time.sleep(3)
+        except TimeoutException:
+            print("方法1: 新規登録ボタンが見つかりませんでした。")
+        for field_id, text in register_user.items():
+            wait_and_send_keys( (By.ID, field_id), text)
+
+        try:
+            # Locate the submit button using the input type
+            register_button = driver.find_element(By.XPATH,"//div[@class='btn register']/input[@type='submit']")
+
+            #ボタンをクリック
+            register_button.click()
+            time.sleep(3)
+        except TimeoutException:
+            print("方法1: 新規登録ボタンが見つかりませんでした。")
+
+        # ログイン処理
+        wait_and_send_keys((By.ID, 'email'), register_user['email'])
+        wait_and_send_keys((By.ID, 'password'), register_user['password'])
         time.sleep(5)
         wait_and_click((By.ID, 'loginButton'))
 
