@@ -7,13 +7,9 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException
 import time
 
-# name = '中村大空'
-# email = 'bb@bbbb'
-# password = 'bbbbbb'
-# confirmPassword = 'bbbbbb'
 register_user = {
     'name': '中村大空',
-    'email': 'bb@bbbb',
+    'email': 'baqb@babia',
     'password': 'bbbbbb',
     'confirmPassword': 'bbbbbb'
 }
@@ -68,32 +64,29 @@ def update_cart_item(xpath, quantity):
 
 def main():
     try:
-         try:
-            # 方法1: CSSセレクタ
-            btn_register = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, 'a.btn.register'))
-            )
-            btn_register.click()
-            time.sleep(3)
-        except TimeoutException:
-            print("方法1: 新規登録ボタンが見つかりませんでした。")
+        # 方法1: CSSセレクタ
+        btn_register = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, 'a.btn.register'))
+        )
+        time.sleep(2)
+        btn_register.click()
+        time.sleep(1)
+       
         for field_id, text in register_user.items():
             wait_and_send_keys( (By.ID, field_id), text)
+        time.sleep(1)
+       
+        register_button = driver.find_element(By.XPATH,"//div[@class='btn register']/input[@type='submit']")
 
-        try:
-            # Locate the submit button using the input type
-            register_button = driver.find_element(By.XPATH,"//div[@class='btn register']/input[@type='submit']")
-
-            #ボタンをクリック
-            register_button.click()
-            time.sleep(3)
-        except TimeoutException:
-            print("方法1: 新規登録ボタンが見つかりませんでした。")
+        #ボタンをクリック
+        register_button.click()
+        time.sleep(2)
+      
 
         # ログイン処理
         wait_and_send_keys((By.ID, 'email'), register_user['email'])
         wait_and_send_keys((By.ID, 'password'), register_user['password'])
-        time.sleep(5)
+        time.sleep(2)
         wait_and_click((By.ID, 'loginButton'))
 
         print("ログイン成功")
@@ -118,29 +111,18 @@ def main():
         bookmark_button = driver.find_element(By.XPATH, '(//div[@class="top"])//i')
         bookmark_button.click()
         time.sleep(1)
-        # deleteBookmarkList_button = driver.find_element(By.XPATH, '(//div[@class="list-item show"])[1]//i[@class="fa-solid fa-bookmark bookmark-button fa-2x"]')
-        # deleteBookmarkList_button.click()
-
-        # bookmarkList_button = driver.find_element(By.XPATH, '//*[@id="header"]/div/nav/ul/li[2]/a')
-        # bookmarkList_button.click()
         bookMarkScreenLink = driver.find_element(By.XPATH, '//*[@id="header"]/div/nav/ul/li[2]/a')
         bookMarkScreenLink.click()
         time.sleep(1)
-        # driver.get('http://localhost:8080/hotmot/BookMarkServlet?userId=1')
         
         deleteBookMarkIcon = driver.find_element(By.XPATH, '//*[@id="lists"]/div[1]/div/i')
         deleteBookMarkIcon.click()
         time.sleep(1)
         driver.refresh()
-        # time.sleep(3)
-        # bookmarkList_button = driver.find_element(By.XPATH, '(//*[@id="sp"]/nav/ul/li[2]/a)')
-        # bookmarkList_button.click()
-        # time.sleep(3)
-        # deleteBookmarkList_button = driver.find_element(By.XPATH, '(//div[@class="list-item show"])[1]//i[@class="fa-solid fa-bookmark bookmark-button fa-2x"]')
-        # deleteBookmarkList_button.click()
-        time.sleep(3)
+        time.sleep(2)
 
-        driver.get('http://localhost:8080/hotmot/ProductListServlet?userId=1')
+        productListScreenLink = driver.find_element(By.XPATH, '//*[@id="header"]/div/nav/ul/li[1]/a')
+        productListScreenLink.click()
         time.sleep(1)
         add_items(1, '2', 2)
         add_items(2, '2', 2)
@@ -167,7 +149,9 @@ def main():
         wait_and_click((By.XPATH, cart_button_xpath))
         time.sleep(2)
         
-        driver.get('http://localhost:8080/hotmot/CartDetailListServlet?cartId=1')
+
+        cartDetailScreenLink = driver.find_element(By.XPATH, '//*[@id="header"]/div/nav/ul/li[3]/a')
+        cartDetailScreenLink.click()
         time.sleep(1)
         
         update_cart_item('(//div[@class="cart-detail-list"]//div[@class="box"])[1]//input[@type="number"]', '100')
@@ -176,7 +160,7 @@ def main():
         wait_and_click((By.XPATH, '//button[@id="updateCart"]'))
         time.sleep(3)
         wait_and_click((By.XPATH, '//button[@id="order"]'))
-        time.sleep(3)
+        time.sleep(8)
 
     except TimeoutException:
         print("タイムアウトエラーが発生しました。")
