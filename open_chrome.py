@@ -73,13 +73,13 @@ def main():
         btn_register = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, 'a.btn.register'))
         )
-        time.sleep(2)
+        time.sleep(6)
         btn_register.click()
         time.sleep(1)
        
         for field_id, text in register_user.items():
             wait_and_send_keys( (By.ID, field_id), text)
-        time.sleep(1)
+        time.sleep(5)
        
         register_button = driver.find_element(By.XPATH,"//div[@class='btn register']/input[@type='submit']")
 
@@ -91,11 +91,11 @@ def main():
         # ログイン処理
         wait_and_send_keys((By.ID, 'email'), register_user['email'])
         wait_and_send_keys((By.ID, 'password'), register_user['password'])
-        time.sleep(2)
+        time.sleep(4)
         wait_and_click((By.ID, 'loginButton'))
 
         print("ログイン成功")
-        time.sleep(1)
+        time.sleep(5)
         listsAdd_button1 = driver.find_element(By.XPATH, '(//div[@class="list-item show"])[1]//i[@class="fa-regular fa-bookmark bookmark-button fa-2x"]')
         listsAdd_button2 = driver.find_element(By.XPATH, '(//div[@class="list-item show"])[2]//i[@class="fa-regular fa-bookmark bookmark-button fa-2x"]')
         listsAdd_button3 = driver.find_element(By.XPATH, '(//div[@class="list-item show"])[3]//i[@class="fa-regular fa-bookmark bookmark-button fa-2x"]')
@@ -118,13 +118,13 @@ def main():
         time.sleep(1)
         bookMarkScreenLink = driver.find_element(By.XPATH, '//*[@id="header"]/div/nav/ul/li[2]/a')
         bookMarkScreenLink.click()
-        time.sleep(1)
+        time.sleep(5)
         
         deleteBookMarkIcon = driver.find_element(By.XPATH, '//*[@id="lists"]/div[1]/div/i')
         deleteBookMarkIcon.click()
-        time.sleep(1)
+        time.sleep(4)
         driver.refresh()
-        time.sleep(2)
+        time.sleep(7)
 
         productListScreenLink = driver.find_element(By.XPATH, '//*[@id="header"]/div/nav/ul/li[1]/a')
         productListScreenLink.click()
@@ -149,19 +149,20 @@ def main():
             wait_and_click((By.XPATH, first_add_button_xpath))
         for _ in range(3):
             wait_and_click((By.XPATH, second_add_button_xpath))
+        time.sleep(3)
         wait_and_click((By.XPATH, cart_button_xpath))
         time.sleep(2)
         
 
         cartDetailScreenLink = driver.find_element(By.XPATH, '//*[@id="header"]/div/nav/ul/li[3]/a')
         cartDetailScreenLink.click()
-        time.sleep(1)
+        time.sleep(3)
         
         update_cart_item('(//div[@class="cart-detail-list"]//div[@class="box"])[1]//input[@type="number"]', '100')
         update_cart_item('(//div[@class="cart-detail-list"]//div[@class="box"])[2]//input[@type="number"]', '100')
 
         wait_and_click((By.XPATH, '//button[@id="updateCart"]'))
-        time.sleep(3)
+        time.sleep(5)
         wait_and_click((By.XPATH, '//button[@id="order"]'))
         time.sleep(5)
 
@@ -174,11 +175,11 @@ def main():
         # 管理者アカウントでログイン
         wait_and_send_keys((By.ID, 'email'), admin_user['email'])
         wait_and_send_keys((By.ID, 'password'), admin_user['password'])
-        time.sleep(2)
+        time.sleep(3)
         wait_and_click((By.ID, 'loginButton'))
 
         print("ログイン成功")
-        time.sleep(3)
+        time.sleep(8)
         body = driver.find_element(By.TAG_NAME, 'body')
         for _ in range(4):
             body.send_keys(Keys.PAGE_DOWN)
