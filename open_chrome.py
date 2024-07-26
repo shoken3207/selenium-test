@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -9,9 +10,14 @@ import time
 
 register_user = {
     'name': '中村大空',
-    'email': 'nakamura1@gmail.com',
+    'email': 'nakamura15@gmail.com',
     'password': 'bbbbbb',
     'confirmPassword': 'bbbbbb'
+}
+
+admin_user = {
+    'email': 'admin@gmail.com',
+    'password': 'aaaaaa',
 }
 driver_path = 'C:\\webdriver\\chromedriver.exe'
 service = Service(driver_path)
@@ -157,8 +163,46 @@ def main():
         wait_and_click((By.XPATH, '//button[@id="updateCart"]'))
         time.sleep(3)
         wait_and_click((By.XPATH, '//button[@id="order"]'))
-        time.sleep(10)
+        time.sleep(5)
 
+
+        # ログアウト
+        logoutLink = driver.find_element(By.XPATH, '//*[@id="header"]/div/nav/ul/li[5]/a')
+        logoutLink.click()
+        time.sleep(1)
+
+        # 管理者アカウントでログイン
+        wait_and_send_keys((By.ID, 'email'), admin_user['email'])
+        wait_and_send_keys((By.ID, 'password'), admin_user['password'])
+        time.sleep(2)
+        wait_and_click((By.ID, 'loginButton'))
+
+        print("ログイン成功")
+        time.sleep(3)
+        body = driver.find_element(By.TAG_NAME, 'body')
+        for _ in range(4):
+            body.send_keys(Keys.PAGE_DOWN)
+            time.sleep(1)  # スクロール間の待機時間を調整
+        time.sleep(2)
+        topScrollButton = driver.find_element(By.XPATH, '/html/body/a')
+        topScrollButton.click()
+        time.sleep(3)
+        selectDateEl = driver.find_element(By.XPATH, '//*[@id="selectDate"]')
+        selectDateEl.clear()
+        driver.execute_script("arguments[0].value = '2024-07-25';", selectDateEl)
+        time.sleep(2)
+        selectDateEl = driver.find_element(By.XPATH, '//*[@id="selectDate"]')
+        selectDateEl.clear()
+        driver.execute_script("arguments[0].value = '2024-07-24';", selectDateEl)
+        time.sleep(2)
+        selectDateEl = driver.find_element(By.XPATH, '//*[@id="selectDate"]')
+        selectDateEl.clear()
+        driver.execute_script("arguments[0].value = '2024-07-10';", selectDateEl)
+        time.sleep(3)
+        logoutLink = driver.find_element(By.XPATH, '//*[@id="logout"]')
+        logoutLink.click()
+        time.sleep(3)
+        
     except TimeoutException:
         print("タイムアウトエラーが発生しました。")
     except Exception as e:
