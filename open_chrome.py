@@ -10,7 +10,7 @@ import time
 
 register_user = {
     'name': '中村大空',
-    'email': 'nakamura15@gmail.com',
+    'email': 'sora@gmail.com',
     'password': 'bbbbbb',
     'confirmPassword': 'bbbbbb'
 }
@@ -186,19 +186,7 @@ def main():
         time.sleep(2)
         topScrollButton = driver.find_element(By.XPATH, '/html/body/a')
         topScrollButton.click()
-        time.sleep(3)
-        selectDateEl = driver.find_element(By.XPATH, '//*[@id="selectDate"]')
-        selectDateEl.clear()
-        driver.execute_script("arguments[0].value = '2024-07-25';", selectDateEl)
-        time.sleep(2)
-        selectDateEl = driver.find_element(By.XPATH, '//*[@id="selectDate"]')
-        selectDateEl.clear()
-        driver.execute_script("arguments[0].value = '2024-07-24';", selectDateEl)
-        time.sleep(2)
-        selectDateEl = driver.find_element(By.XPATH, '//*[@id="selectDate"]')
-        selectDateEl.clear()
-        driver.execute_script("arguments[0].value = '2024-07-10';", selectDateEl)
-        time.sleep(3)
+        time.sleep(5)
         logoutLink = driver.find_element(By.XPATH, '//*[@id="logout"]')
         logoutLink.click()
         time.sleep(3)
