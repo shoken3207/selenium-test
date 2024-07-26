@@ -9,7 +9,7 @@ import time
 
 register_user = {
     'name': '中村大空',
-    'email': 'baqb@babia',
+    'email': 'nakamura1@gmail.com',
     'password': 'bbbbbb',
     'confirmPassword': 'bbbbbb'
 }
@@ -64,7 +64,6 @@ def update_cart_item(xpath, quantity):
 
 def main():
     try:
-        # 方法1: CSSセレクタ
         btn_register = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, 'a.btn.register'))
         )
@@ -123,13 +122,11 @@ def main():
 
         productListScreenLink = driver.find_element(By.XPATH, '//*[@id="header"]/div/nav/ul/li[1]/a')
         productListScreenLink.click()
-        time.sleep(1)
         add_items(1, '2', 2)
         add_items(2, '2', 2)
         add_items(3, '7', 2)
         add_items(4, '7', 2)
 
-        # Add items from tab 1
         wait_and_click((By.XPATH, '(//div[@class="tab"])[1]'))
         time.sleep(1)
         link = WebDriverWait(driver, 10).until(
@@ -160,7 +157,7 @@ def main():
         wait_and_click((By.XPATH, '//button[@id="updateCart"]'))
         time.sleep(3)
         wait_and_click((By.XPATH, '//button[@id="order"]'))
-        time.sleep(8)
+        time.sleep(10)
 
     except TimeoutException:
         print("タイムアウトエラーが発生しました。")
